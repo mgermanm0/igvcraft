@@ -1,0 +1,5 @@
+﻿  igvEscena3D.cpp
+D:\PracticasIGV\igvCraft\igvCraft\igvPunto3D.h(25,2): warning C4091: 'typedef ': se ha omitido a la izquierda de '<unnamed-enum-X>' cuando no hay ninguna variable declarada
+D:\PracticasIGV\igvCraft\igvCraft\Chunk.h(8,12): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+D:\PracticasIGV\igvCraft\igvCraft\Chunk.h(9,12): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+  igvCraft.vcxproj -> D:\PracticasIGV\igvCraft\igvCraft\Debug\igvCraft.exe
