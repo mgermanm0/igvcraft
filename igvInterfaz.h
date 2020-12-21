@@ -15,7 +15,10 @@
 #include "igvCamara.h"
 
 using namespace std;
-
+typedef enum {
+	IGV_VISUALIZAR,
+	IGV_SELECCIONAR,
+} modoInterfaz;
 class igvInterfaz {
 	protected:
 		// Atributos
@@ -24,12 +27,18 @@ class igvInterfaz {
 
 		igvEscena3D escena; // escena que se visualiza en la ventana definida por igvInterfaz
 		igvCamara camara; // cámara que se utiliza para visualizar la escena
+		igvCamara minimapa;
 
+		modoInterfaz modo = IGV_VISUALIZAR;
+
+		int cursorX = 0;
+		int cursorY = 0;
+		bool boton_retenido = false;
 		bool normal = false;
 		bool gouraud = false;
-
-		int difXMotion = 0;
-		int difYMotion = 0;
+		bool skipEvento = true;
+		double dt;
+		double tUltimoFotograma;
 
 	public:
 		// Constructores por defecto y destructor
@@ -41,9 +50,10 @@ class igvInterfaz {
 		static void set_glutKeyboardFunc(unsigned char key, int x, int y); // metodo para control de eventos del teclado
 		static void set_glutReshapeFunc(int w, int h); // método que define la camara de vision y el viewport
 		                                               // se llama automáticamente cuano se camba el tamaño de la ventana
+		static void set_glutMouseFunc(GLint boton, GLint estado, GLint x, GLint y);
 		static void set_glutDisplayFunc(); // método para visualizar la escena
 		static void set_glutPassiveMotionFunc(GLint x, GLint y);
-
+		static void set_timer(int);
 		// Metodos
 		// crea el mundo que se visualiza en la ventana
 		void crear_mundo(void);

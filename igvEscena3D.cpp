@@ -16,7 +16,7 @@ igvEscena3D::igvEscena3D() {
 	ejes = true;
 
 	//Crear un mundo
-	mundo = new Mundo(0, 50, 0, 50, 5, 5, 5);
+	mundo = new Mundo(0, 50, 0, 50, 10, 5, 10);
 }
 
 igvEscena3D::~igvEscena3D() {
@@ -28,6 +28,30 @@ igvEscena3D::~igvEscena3D() {
 // Metodos publicos 
 
 void pintar_ejes(void) {
+	GLfloat rojo[] = { 1,0,0,1.0 };
+	GLfloat verde[] = { 0,1,0,1.0 };
+	GLfloat azul[] = { 0,0,1,1.0 };
+
+	glMaterialfv(GL_FRONT, GL_EMISSION, rojo);
+	glBegin(GL_LINES);
+	glVertex3f(1000, 0, 0);
+	glVertex3f(-1000, 0, 0);
+	glEnd();
+
+	glMaterialfv(GL_FRONT, GL_EMISSION, verde);
+	glBegin(GL_LINES);
+	glVertex3f(0, 1000, 0);
+	glVertex3f(0, -1000, 0);
+	glEnd();
+
+	glMaterialfv(GL_FRONT, GL_EMISSION, azul);
+	glBegin(GL_LINES);
+	glVertex3f(0, 0, 1000);
+	glVertex3f(0, 0, -1000);
+	glEnd();
+}
+
+void pintar_cruceta(void) {
 	GLfloat rojo[] = { 1,0,0,1.0 };
 	GLfloat verde[] = { 0,1,0,1.0 };
 	GLfloat azul[] = { 0,0,1,1.0 };
@@ -79,13 +103,11 @@ void igvEscena3D::visualizar(bool normal, bool gouraud) {
 	glMaterialfv(GL_FRONT, GL_EMISSION, color);
 	cubo->visualizaCuboSinColor();
 	glPopMatrix();
-	std::cout << x  << " " << z << "\n";
-	Sleep(100);
 	x++;
-	if (x >= 20) {
+	if (x >= 50) {
 		x = 0;
 		z++;
-		if (z >= 20) {
+		if (z >= 50) {
 			z = 0;
 		}	
 	}

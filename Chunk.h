@@ -20,10 +20,11 @@ private:
 	int tamaZ = 4;
 public:
 	Chunk();
-	Chunk(int xMin, int zMin, int tamaX, int tamaY, int tamaZ);
+	Chunk(int xMin, int zMin, int tamaX, int tamaY, int tamaZ,float* colorgen);
 	~Chunk();
 	int getTam();
 	Cubo* getCubo(igvPunto3D p);
+	Cubo* getCubo(float* p);
 	void drawChunk();
 	void drawChunkSinColor();
 

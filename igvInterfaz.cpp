@@ -1,8 +1,9 @@
 #include <cstdlib>
 #include <stdio.h>
 #include <iostream>
+#include <math.h>
 #include "igvInterfaz.h"
-
+#define PI 3.14159265358979323846
 extern igvInterfaz interfaz; // los callbacks deben ser estaticos y se requiere este objeto para acceder desde
                              // ellos a las variables de la clase
 
@@ -17,8 +18,10 @@ igvInterfaz::~igvInterfaz () {}
 
 void igvInterfaz::crear_mundo(void) {
 	// crear cámaras
-	interfaz.camara.set(IGV_PERSPECTIVA, igvPunto3D(30,30,10),igvPunto3D(-20,-20,4),igvPunto3D(0,1,0),
-		                                60.0, 1.0 , 0.1, -1*3);
+	interfaz.camara.set(IGV_PERSPECTIVA, igvPunto3D(25,7,25),igvPunto3D(25,7,24),igvPunto3D(0,1,0),
+		                                60.0, 1.0 , 0.2, -1*3);
+	interfaz.minimapa.set(IGV_PERSPECTIVA, igvPunto3D(25, 25, 25), igvPunto3D(25, 7, 25), igvPunto3D(1, 0, 0),
+		60.0, 1.0, 0.2, -1 * 3);
 }
 
 void igvInterfaz::configura_entorno(int argc, char** argv,
@@ -40,7 +43,7 @@ void igvInterfaz::configura_entorno(int argc, char** argv,
 
 	glEnable(GL_LIGHTING); // activa la iluminacion de la escena
   glEnable(GL_NORMALIZE); // normaliza los vectores normales para calculo iluminacion
-
+  glutSetCursor(GLUT_CURSOR_NONE);
 	crear_mundo(); // crea el mundo a visualizar en la ventana
 }
 
@@ -84,25 +87,26 @@ void igvInterfaz::set_glutKeyboardFunc(unsigned char key, int x, int y) {
 		interfaz.gouraud = !interfaz.gouraud;
 		break;
 	case 'w':
-		interfaz.camara.mover('w');
+		interfaz.camara.moverAdelante(interfaz.dt);
 		interfaz.camara.aplicar();
 		break;
 	case 'a':
-		interfaz.camara.mover('a');
+		interfaz.camara.moverIzquierda(interfaz.dt);
 		interfaz.camara.aplicar();
 		break;
 	case 's':
-		interfaz.camara.mover('s');
+		interfaz.camara.moverAtras(interfaz.dt);
 		interfaz.camara.aplicar();
 		break;
 	case 'd':
-		interfaz.camara.mover('d');
+		interfaz.camara.moverDerecha(interfaz.dt);
 		interfaz.camara.aplicar();
 		break;
     case 27: // tecla de escape para SALIR
       exit(1);
     break;
   }
+
 	glutPostRedisplay(); // renueva el contenido de la ventana de vision
 }
 
@@ -117,34 +121,106 @@ void igvInterfaz::set_glutReshapeFunc(int w, int h) {
 }
 
 void igvInterfaz::set_glutDisplayFunc() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // borra la ventana y el z-buffer
 
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // borra la ventana y el z-buffer
 	// se establece el viewport
 	glViewport(0, 0, interfaz.get_ancho_ventana(), interfaz.get_alto_ventana());
 
-	// establece los parámetros de la cámara y de la proyección
-	interfaz.camara.aplicar();
+	// Apartado A: antes de aplicar las transformaciones de cámara y proyección hay que comprobar el modo para sólo visualizar o seleccionar:
+	if (interfaz.modo == IGV_SELECCIONAR) {
+		// Apartado A: Para que funcione habrá que dibujar la escena sin efectos, sin iluminación, sin texturas ...
+		glDisable(GL_LIGHTING); // desactiva la iluminacion de la escena
+		glDisable(GL_DITHER);
 
-	//visualiza la escena
-	interfaz.escena.visualizar(interfaz.normal, interfaz.gouraud);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_CULL_FACE);
+		// Apartado A: Reestablece los colores como no seleccionado
 
-	// refresca la ventana
-	glutSwapBuffers(); // se utiliza, en vez de glFlush(), para evitar el parpadeo
+
+		// Apartado A: aplica la cámara
+		interfaz.camara.aplicar();
+
+		// Apartado A: visualiza los BV cada uno de un color
+
+
+		// Apartado A: Obtener el color del pixel seleccionado
+		GLubyte pixel[3];
+		glReadPixels(interfaz.cursorX, interfaz.cursorY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
+
+		// Apartado A: Comprobar el color del objeto que hay en el cursor mirando en la tabla de colores y asigna otro color al objeto seleccionado
+
+
+
+		// Apartado A: Cambiar a modo de visualización de la escena
+		interfaz.modo = IGV_VISUALIZAR;
+
+		// Apartado A: Habilitar de nuevo la iluminación
+		glEnable(GL_LIGHTING);
+	}
+	else {
+		// aplica las transformaciones en función de los parámetros de la cámara
+		interfaz.camara.aplicar();
+		// visualiza la escena
+		interfaz.escena.visualizar(false,false);
+
+		// refresca la ventana
+		glutSwapBuffers();
+	}
+}
+void igvInterfaz::set_glutMouseFunc(GLint boton, GLint estado, GLint x, GLint y) {
+	// Apartado A: comprobar que se ha pulsado el botón izquierdo 
+	if (boton == GLUT_LEFT_BUTTON) {
+		// Apartado A: guardar que el boton se ha presionado o se ha soltado, si se ha pulsado hay que
+		// pasar a modo IGV_SELECCIONAR
+		if (estado == GLUT_DOWN) {
+			std::cout << "Boton pulsado y presionado";
+			interfaz.boton_retenido = true;
+
+			interfaz.modo = IGV_SELECCIONAR;
+
+			// Apartado A: guardar el pixel pulsado
+			interfaz.cursorX = x;
+			interfaz.cursorY = interfaz.alto_ventana - y;
+		}
+		else {
+			interfaz.boton_retenido = false;
+		}
+
+
+		// Apartado A: renovar el contenido de la ventana de vision 
+		glutPostRedisplay();
+	}
 }
 
 
 void igvInterfaz::set_glutPassiveMotionFunc(GLint x, GLint y) {
-	/*
-	interfaz.difXMotion = (x - interfaz.difXMotion) * 0.01f;
-	interfaz.difYMotion = (y - interfaz.difYMotion) * 0.01f;
-	std::cout << interfaz.difXMotion << " " << interfaz.difYMotion << "\n";
-	interfaz.camara.rotate(interfaz.difXMotion, interfaz.difYMotion);
-	interfaz.camara.aplicar();
-		*/
+	if (interfaz.skipEvento) {
+		interfaz.skipEvento = false;
+		return;
+	}
+	glutWarpPointer(interfaz.ancho_ventana / 2, interfaz.alto_ventana / 2); //esta funcion genera un evento al mover el raton que no me interesa.
+	//std::cout << "dt: " << dt << "\n";
+
+		double nuevox = (x - (interfaz.ancho_ventana / 2)) * interfaz.dt;
+		double nuevoy = ((interfaz.alto_ventana / 2) - y) * interfaz.dt;
+		interfaz.camara.mirar(nuevox, nuevoy);
+		interfaz.camara.aplicar();
+		interfaz.skipEvento = true;
+
 	glutPostRedisplay();
 
 	
 
+}
+
+void igvInterfaz::set_timer(int)
+{
+	int t = glutGet(GLUT_ELAPSED_TIME);
+	interfaz.dt = (t - interfaz.tUltimoFotograma) / 1000.0;
+	interfaz.tUltimoFotograma = t;
+	glutPostRedisplay();
+	glutTimerFunc(1000 / 60, set_timer, 0);
 }
 
 void igvInterfaz::inicializa_callbacks() {
@@ -152,4 +228,6 @@ void igvInterfaz::inicializa_callbacks() {
 	glutReshapeFunc(set_glutReshapeFunc);
 	glutDisplayFunc(set_glutDisplayFunc);
 	glutPassiveMotionFunc(set_glutPassiveMotionFunc);
+	glutMouseFunc(set_glutMouseFunc);
+	glutTimerFunc(1000/60,set_timer,0);
 }

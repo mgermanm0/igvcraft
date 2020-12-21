@@ -8,11 +8,9 @@ Cubo::Cubo() :igvMallaTriangulos()
 {
 }
 
-Cubo::Cubo(double lado, igvPunto3D& coords, float* color): coords(coords), color(color), lado(lado)
+Cubo::Cubo(double lado, igvPunto3D& coords, float* color, TipoBloque tipo): coords(coords), color(color), lado(lado), tipo(tipo)
 {
-	/* Apartado B: Construir la malla de triángulos para representar el cilindro */
-	//cos alfa es X y sen alfa es y
-	//pasar a radianes
+	
 	long int vnum = 8;
 	long int tnum = 12;
 	long int tamavertices = vnum * 3;
@@ -139,6 +137,11 @@ igvPunto3D* Cubo::getCoords()
 	return &coords;
 }
 
+float* Cubo::getColor()
+{
+	return color;
+}
+
 TipoBloque Cubo::getTipo()
 {
 	return tipo;
@@ -166,4 +169,12 @@ void Cubo::visualizaCuboSinColor()
 	glTranslatef(coords[X] + lado / 2.0, coords[Y] + 0.5, coords[Z] + lado / 2.0);
 	visualizar();
 	glPopMatrix();
+}
+
+std::ostream& operator<<(std::ostream& os, const Cubo& cubo)
+{
+	os << "Coordenadas de bloque: " << cubo.coords[X] << ", " << cubo.coords[Y] << ", " << cubo.coords[Z] << '\n';
+	os << "Color: " << cubo.color[X] << ", " << cubo.color[Y] << ", " << cubo.color[Z] << '\n';
+	os <<  "Lado: " << cubo.lado;
+	return os;
 }

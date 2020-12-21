@@ -1,56 +1,51 @@
 #include "Chunk.h"
+#include "TipoBloque.h"
 #include <map>
 Chunk::Chunk()
 {
 }
 
-Chunk::Chunk(int xMin, int zMin ,int tamaX, int tamaY, int tamaZ): tamaX(tamaX), tamaY(tamaY), tamaZ(tamaZ)
+Chunk::Chunk(int xMin, int zMin ,int tamaX, int tamaY, int tamaZ, float* colorgen): tamaX(tamaX), tamaY(tamaY), tamaZ(tamaZ)
 {
 	float lado = 1;
-	int r = 0;
-	int g = 0;
-	int b = 0;
 	for (int y = 0; y < tamaY; y++)
 	{
 		for (int x = 0; x < tamaX; x++)
 		{
 			for(int z = 0; z < tamaZ; z++){
 				float* color = new float[3];
-				if (z % 2 == 0) {
-					color[0] = r / 255.0;
-					color[1] = g / 255.0;
-					color[2] = b / 255.0;
-				}
-				else if (z % 3 == 0) {
-					color[0] = g / 255.0;
-					color[1] = b / 255.0;
-					color[2] = r / 255.0;
+				color[0] = colorgen[0] / 255.0;
+				color[1] = colorgen[1] / 255.0;
+				color[2] = colorgen[2] / 255.0;
+				
+				igvPunto3D coords(xMin + x*lado, y*lado, zMin + z*lado);
+				Cubo* cubo;
+				if(y == (tamaY/2)) cubo = new Cubo(lado, coords, color, UtilesBloques::TIERRA);
+				else if (y > (tamaY/2)){
+					cubo = new Cubo(lado, coords, color, UtilesBloques::VACIO);
 				}
 				else {
-					color[0] = b / 255.0;
-					color[1] = r / 255.0;
-					color[2] = g / 255.0;
+					cubo = new Cubo(lado, coords, color, UtilesBloques::PIEDRA);
 				}
-				if (y == tamaY - 1) {
-					color[1] = 1;
-					color[0] = color[2] = 0;
-				}
-				igvPunto3D coords(xMin + x*lado, y*lado, zMin + z*lado);
-				Cubo* cubo = new Cubo(lado, coords, color);
 				this->chunk.push_back(cubo);
-				b += 1;
+				colorgen[0] += 1;
+
+				if (colorgen[0] > 255) {
+					colorgen[0] = 0;
+					if (colorgen[1] > 255) {
+						colorgen[1] = 0;
+						if (colorgen[2] > 255) {
+							printf("NO MAS COLORES");
+						}
+						else {
+							colorgen[2] += 1;
+						}
+					}
+					else {
+						colorgen[1] += 1;
+					}
+				}
 			}
-			if (b >= 255) {
-				b = 0;
-			}
-			g++;
-		}
-		if (g >= 255) {
-			g = 0;
-		}
-		r ++;
-		if (r >= 255) {
-			printf("NO HAY MAS COLORES QUE ISISTE");
 		}
 	}
 }
@@ -73,17 +68,30 @@ Cubo* Chunk::getCubo(igvPunto3D p)
 {
 	for (int i = 0; i < chunk.size(); i++) {
 		if (p == *(chunk[i]->getCoords())) {
+			//std::cout << "Cubo seleccionado por coords: " << *(chunk[i]) << "\n";
 			return chunk[i];
 		}
 	}
     return nullptr;
 }
 
+Cubo* Chunk::getCubo(float* p)
+{
+	for (int i = 0; i < chunk.size(); i++) {
+		float* color = chunk[i]->getColor();
+		if (p[0] == color[0] && p[1] == color[1] && p[2] == color[2]) {
+			//std::cout << "Cubo seleccionado: " << chunk[i] << "\n";
+			return chunk[i];
+		}
+	}
+	return nullptr;
+}
+
 void Chunk::drawChunk()
 {
 	for (int i = 0; i < chunk.size(); i++)
 	{
-		chunk[i]->visualizarCubo();
+		if(chunk[i]->getTipo() != UtilesBloques::VACIO) chunk[i]->visualizarCubo();
 	}
 
 }

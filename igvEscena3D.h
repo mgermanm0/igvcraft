@@ -23,9 +23,10 @@ protected:
 	double anguloY = 0;
 	double anguloZ = 0;
 
+public:
+
 	int x = 0;
 	int z = 0;
-public:
 	// atributos públicos
 	igvMallaTriangulos* malla; // malla de triángulos asociada a la escena
 

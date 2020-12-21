@@ -22,10 +22,12 @@ Mundo::Mundo(int xMin, int xMax, int zMin, int zMax, int tamaChunkX, int tamaChu
 	this->tamCasillaZ = tamaChunkZ;
 
 	mundo.resize(numDivZ);
+	float* colorgen = new float[3];
+	colorgen[0] = colorgen[1] = colorgen[2] = 0;
 	for (int i = 0; i < numDivZ; i++)
 	{
 		for (int j = 0; j < numDivX; j++) {
-			Chunk* chunk = new Chunk(j*tamaChunkX + xMin,i*tamaChunkZ + zMin,tamaChunkX,tamaChunkY,tamaChunkZ);
+			Chunk* chunk = new Chunk(j*tamaChunkX + xMin,i*tamaChunkZ + zMin,tamaChunkX,tamaChunkY,tamaChunkZ, colorgen);
 			mundo[i].push_back(chunk);
 		}
 	}
@@ -56,5 +58,7 @@ Chunk* Mundo::getChunk(int x, int z)
 	if (x > xMax || x<xMin || z>zMax || z < zMin) return nullptr;
 	int zc = (z - zMin) / tamCasillaZ;
 	int xc = (x - xMin) / tamCasillaX;
+	if (zc > mundo.size() - 1) zc = mundo.size() - 1;
+	if (xc > mundo[zc].size() - 1) xc = mundo[zc].size() - 1;
 	return mundo[zc][xc];
 }

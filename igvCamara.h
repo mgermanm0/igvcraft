@@ -10,6 +10,12 @@
 #endif
 
 #include "igvPunto3D.h"
+typedef enum {
+	panoramica,
+	planta,
+	perfil,
+	alzado,
+}poscam;
 
 typedef enum {
 	IGV_PARALELA,
@@ -19,57 +25,71 @@ typedef enum {
 
 class igvCamara {
 
-	public:
-		// atributos
+public:
+	// atributos
+	poscam vis;		// Posición de la cámara
 
-		tipoCamara tipo;	// paralela o perspectiva
+	tipoCamara tipo;	// paralela o perspectiva
 
-		// ventana de visión: parametros proyección paralela y frustum
-		GLdouble xwmin, xwmax, ywmin, ywmax;
+	// ventana de visión: parametros proyección paralela y frustum
+	GLdouble xwmin, xwmax, ywmin, ywmax;
 
-		// ventana de visión: parametros proyección perspectiva
-		GLdouble 	angulo, raspecto;
+	// ventana de visión: parametros proyección perspectiva
+	GLdouble 	angulo, raspecto;
 
-		// distancias de planos cercano y lejano
-		GLdouble znear, zfar;
+	// distancias de planos cercano y lejano
+	GLdouble znear, zfar;
 
-		// punto de visión
-		igvPunto3D P0;
+	// punto de visión	
+	igvPunto3D P0;
 
-		// punto de referencia de visión
-		igvPunto3D r;
+	// punto de referencia de visión	
+	igvPunto3D r;
 
-		// vector arriba
-		igvPunto3D V;
+	// vector arriba	
+	igvPunto3D V;
 
-		double ang = 0;
-		// Metodos
+	//Ángulos
+	double alfa = 0;
+	double beta = 0;
+	double vel = 15;
+	// Metodos
 
-	public:
-		// Constructores por defecto y destructor
-		igvCamara();
-		~igvCamara();
+public:
+	// Constructores por defecto y destructor
+	igvCamara();
+	~igvCamara();
 
-		// Otros constructores
-		igvCamara(tipoCamara _tipo, igvPunto3D _P0, igvPunto3D _r, igvPunto3D _V);
+	// Otros constructores
+	igvCamara(tipoCamara _tipo, igvPunto3D _P0, igvPunto3D _r, igvPunto3D _V);
 
-		// Metodos
-		// define la posición de la cámara
-		void set(igvPunto3D _P0, igvPunto3D _r, igvPunto3D _V);
+	// Metodos
+	// define la posición de la cámara
+	void set(igvPunto3D _P0, igvPunto3D _r, igvPunto3D _V);
 
-		// define una cámara de tipo paralela o frustum
-		void set(tipoCamara _tipo, igvPunto3D _P0, igvPunto3D _r, igvPunto3D _V,
-			                         double _xwmin, double _xwmax, double _ywmin, double _ywmax, double _znear, double _zfar);
+	// define una cámara de tipo paralela o frustum
+	void set(tipoCamara _tipo, igvPunto3D _P0, igvPunto3D _r, igvPunto3D _V,
+		double _xwmin, double _xwmax, double _ywmin, double _ywmax, double _znear, double _zfar);
 
-		// define una cámara de tipo perspectiva
-		void set(tipoCamara _tipo, igvPunto3D _P0, igvPunto3D _r, igvPunto3D _V,
-			                         double _angulo, double _raspecto, double _znear, double _zfar);
+	// define una cámara de tipo perspectiva
+	void set(tipoCamara _tipo, igvPunto3D _P0, igvPunto3D _r, igvPunto3D _V,
+		double _angulo, double _raspecto, double _znear, double _zfar);
 
-		void aplicar(void); // aplica a los objetos de la escena la transformación de visión y la transformación de proyección
-		                    // asociadas a los parámetros de la cámara
-		
-		void rotate(int difx, int dify);
-		void mover(char tipo);
+	void aplicar();
+
+	void set_vista(tipoCamara t) { tipo = t; };
+	tipoCamara get_vista() { return tipo; };
+	void set_poscam(poscam x) { vis = x; };
+	poscam get_poscam() { return vis; };
+	double distPuntoVision();
+	void mirar(double incAlfa, double incBeta);
+	void moverAdelante(double dt);
+	void moverAtras(double dt);
+	void moverIzquierda(double dt);
+	void moverDerecha(double dt);
+	void seguir(double dt);
+	void pitch(double incAlfa);
+	void yaw(double incBeta);
 };
 
 #endif

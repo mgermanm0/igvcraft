@@ -12,7 +12,7 @@
 #else
 #include <GL/glut.h>
 #endif
-
+#include <iostream>
 #define IGV_EPSILON 0.000001 // para comparaciones con 0
 
 #ifndef __ENUM_XYZ
@@ -52,7 +52,20 @@ class igvPunto3D {
 		int operator != (const igvPunto3D& p);
 		igvPunto3D& operator+(const igvPunto3D& p);
 
+		igvPunto3D& operator-(const igvPunto3D& p);
+
+		igvPunto3D& operator-=(const igvPunto3D& p);
+
+		igvPunto3D& operator+=(const igvPunto3D& p);
+
+		igvPunto3D& operator*(const double& n);
+
+		static igvPunto3D& productoVectorial(const igvPunto3D& a, const igvPunto3D& b);
+		static void normalizar(igvPunto3D& v);
+
 		void set( const double& x, const double& y, const double& z);
+
+		friend std::ostream& operator<< (std::ostream& os, const igvPunto3D& p);
 };
 #endif
 
