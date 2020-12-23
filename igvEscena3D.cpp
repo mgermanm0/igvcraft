@@ -9,6 +9,7 @@
 #include "Cubo.h"
 #include "Chunk.h"
 #include <iostream>
+#include "igvFuenteLuz.h"
 
 // Metodos constructores 
 
@@ -16,7 +17,7 @@ igvEscena3D::igvEscena3D() {
 	ejes = true;
 
 	//Crear un mundo
-	mundo = new Mundo(0, 50, 0, 50, 10, 5, 10);
+	mundo = new Mundo(0, 10, 0, 10, 2, 5, 2);
 }
 
 igvEscena3D::~igvEscena3D() {
@@ -78,10 +79,8 @@ void pintar_cruceta(void) {
 void igvEscena3D::visualizar(bool normal, bool gouraud) {
 	GLfloat color_malla[] = { 0,0.50,0 };
 	// crear luces
-	GLfloat luz0[4] = { 7,7,7,1 }; // luz puntual para visualizar el cubo
-
-	glLightfv(GL_LIGHT0, GL_POSITION, luz0); // la luz se coloca aquí si permanece fija y no se mueve con la escena
-	glEnable(GL_LIGHT0);
+	igvFuenteLuz luzDireccional(GL_LIGHT0, igvPunto3D(20, 20, 20), igvColor(0, 0, 0, 1), igvColor(1, 1, 1, 1), igvColor(1, 1, 1, 1), 1, 0, 0);
+	luzDireccional.aplicar();
 
 	// crear el modelo
 	glPushMatrix(); // guarda la matriz de modelado
@@ -93,15 +92,15 @@ void igvEscena3D::visualizar(bool normal, bool gouraud) {
 	
 
 	glPushMatrix();
+	double lado = 1;
+	float color[] = { 0,0,0 };
 	mundo->drawWorld();
-	glPopMatrix();
-	glPushMatrix();
-	Chunk* obtenido = mundo->getChunk(x, z);
-	Cubo* cubo = obtenido->getCubo(igvPunto3D(x, 3, z));
-	glTranslatef(0, 2, 0);
-	float color[] = { 1,0,0 };
-	glMaterialfv(GL_FRONT, GL_EMISSION, color);
-	cubo->visualizaCuboSinColor();
+	//Chunk* obtenido = mundo->getChunk(x, z);
+	//Cubo* cubo = obtenido->getCubo(igvPunto3D(x, 3, z));
+	//glTranslatef(0, 2, 0);
+	//float color[] = { 1,0,0 };
+	//glMaterialfv(GL_FRONT, GL_EMISSION, color);
+	//cubo->visualizaCuboSinColor();
 	glPopMatrix();
 	x++;
 	if (x >= 50) {

@@ -1,10 +1,12 @@
 #pragma once
 #include <vector>
 #include "Chunk.h"
+#include "TextureLoader.h"
 class Mundo
 {
 private:
 	std::vector<std::vector<Chunk*>> mundo;
+	TextureLoader loader;
 	int xMin, zMin, xMax, zMax;
 	float tamCasillaX, tamCasillaZ;
 public:

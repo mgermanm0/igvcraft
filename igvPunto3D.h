@@ -64,7 +64,7 @@ class igvPunto3D {
 		static void normalizar(igvPunto3D& v);
 
 		void set( const double& x, const double& y, const double& z);
-
+		float* cloneToFloatArray() const; //Devuelve el punto en un array de float
 		friend std::ostream& operator<< (std::ostream& os, const igvPunto3D& p);
 };
 #endif

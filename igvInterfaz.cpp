@@ -43,7 +43,9 @@ void igvInterfaz::configura_entorno(int argc, char** argv,
 
 	glEnable(GL_LIGHTING); // activa la iluminacion de la escena
   glEnable(GL_NORMALIZE); // normaliza los vectores normales para calculo iluminacion
+  glEnable(GL_TEXTURE_2D);
   glutSetCursor(GLUT_CURSOR_NONE);
+
 	crear_mundo(); // crea el mundo a visualizar en la ventana
 }
 

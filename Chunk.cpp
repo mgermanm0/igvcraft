@@ -1,11 +1,13 @@
 #include "Chunk.h"
 #include "TipoBloque.h"
+#include "tipoCubo.h"
+#include "TextureLoader.h"
 #include <map>
 Chunk::Chunk()
 {
 }
 
-Chunk::Chunk(int xMin, int zMin ,int tamaX, int tamaY, int tamaZ, float* colorgen): tamaX(tamaX), tamaY(tamaY), tamaZ(tamaZ)
+Chunk::Chunk(int xMin, int zMin ,int tamaX, int tamaY, int tamaZ, float* colorgen, TextureLoader& loader): tamaX(tamaX), tamaY(tamaY), tamaZ(tamaZ)
 {
 	float lado = 1;
 	for (int y = 0; y < tamaY; y++)
@@ -20,16 +22,16 @@ Chunk::Chunk(int xMin, int zMin ,int tamaX, int tamaY, int tamaZ, float* colorge
 				
 				igvPunto3D coords(xMin + x*lado, y*lado, zMin + z*lado);
 				Cubo* cubo;
-				if(y == (tamaY/2)) cubo = new Cubo(lado, coords, color, UtilesBloques::TIERRA);
+				if(y == (tamaY/2)) cubo = new Cubo(lado, coords, color, CESPED, loader.getTextura(TIERRA));
 				else if (y > (tamaY/2)){
-					cubo = new Cubo(lado, coords, color, UtilesBloques::VACIO);
+					cubo = new Cubo(lado, coords, color, VACIO , loader.getTextura(TIERRA));
 				}
 				else {
-					cubo = new Cubo(lado, coords, color, UtilesBloques::PIEDRA);
+					cubo = new Cubo(lado, coords, color, PIEDRA, loader.getTextura(TIERRA));
 				}
 				this->chunk.push_back(cubo);
 				colorgen[0] += 1;
-
+				/*
 				if (colorgen[0] > 255) {
 					colorgen[0] = 0;
 					if (colorgen[1] > 255) {
@@ -44,7 +46,7 @@ Chunk::Chunk(int xMin, int zMin ,int tamaX, int tamaY, int tamaZ, float* colorge
 					else {
 						colorgen[1] += 1;
 					}
-				}
+				}*/
 			}
 		}
 	}
@@ -91,7 +93,7 @@ void Chunk::drawChunk()
 {
 	for (int i = 0; i < chunk.size(); i++)
 	{
-		if(chunk[i]->getTipo() != UtilesBloques::VACIO) chunk[i]->visualizarCubo();
+		if(chunk[i]->getTipo() != VACIO) chunk[i]->visualizarCubo();
 	}
 
 }

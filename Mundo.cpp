@@ -9,10 +9,10 @@ Mundo::Mundo(int xMin, int xMax, int zMin, int zMax, int tamaChunkX, int tamaChu
 	int bloquesX = xMax - xMin;
 	int bloquesZ = zMax - zMin;
 	int numDivX = ceil(bloquesX / (float)tamaChunkX);
-	int numDivZ = ceil(bloquesZ / (float)tamaChunkY);
+	int numDivZ = ceil(bloquesZ / (float)tamaChunkZ);
 
 	int rectificarXmax = xMax + (numDivX * tamaChunkX - bloquesX);
-	int rectificarZmax = zMax + (numDivZ * tamaChunkX - bloquesZ);
+	int rectificarZmax = zMax + (numDivZ * tamaChunkZ - bloquesZ);
 
 	this->xMax = rectificarXmax;
 	this->xMin = xMin;
@@ -27,7 +27,7 @@ Mundo::Mundo(int xMin, int xMax, int zMin, int zMax, int tamaChunkX, int tamaChu
 	for (int i = 0; i < numDivZ; i++)
 	{
 		for (int j = 0; j < numDivX; j++) {
-			Chunk* chunk = new Chunk(j*tamaChunkX + xMin,i*tamaChunkZ + zMin,tamaChunkX,tamaChunkY,tamaChunkZ, colorgen);
+			Chunk* chunk = new Chunk(j*tamaChunkX + xMin,i*tamaChunkZ + zMin,tamaChunkX,tamaChunkY,tamaChunkZ, colorgen, loader);
 			mundo[i].push_back(chunk);
 		}
 	}

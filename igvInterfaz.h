@@ -31,8 +31,6 @@ class igvInterfaz {
 
 		modoInterfaz modo = IGV_VISUALIZAR;
 
-		int cursorX = 0;
-		int cursorY = 0;
 		bool boton_retenido = false;
 		bool normal = false;
 		bool gouraud = false;

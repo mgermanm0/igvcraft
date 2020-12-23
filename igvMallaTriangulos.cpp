@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <iostream>
+#include "igvTextura.h"
 #include "igvMallaTriangulos.h"
 
 igvMallaTriangulos::igvMallaTriangulos() :num_vertices(0), vertices(nullptr), num_triangulos(0), triangulos(nullptr),normales(nullptr)
@@ -37,20 +38,25 @@ igvMallaTriangulos::~igvMallaTriangulos() {
 }
 
 
+
 void igvMallaTriangulos::visualizar() {
 	
-	/* Apartado B: TODO */
 	glShadeModel(GL_FLAT);
+
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glTexCoordPointer(2, GL_FLOAT, 0, texarr);
 
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glVertexPointer(3, GL_FLOAT, 0, vertices);
 
 		glDrawElements(GL_TRIANGLES, num_triangulos * 3, GL_UNSIGNED_INT, triangulos);
 		glDisableClientState(GL_VERTEX_ARRAY);
+
 	
 
 
 
 
 }
+
 

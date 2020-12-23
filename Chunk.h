@@ -2,6 +2,7 @@
 #include "Cubo.h"
 #include <vector>
 #include "igvPunto3D.h"
+#include "TextureLoader.h"
 struct comparatorPunto3D {
 
 	bool operator() (const igvPunto3D& p1, const igvPunto3D& p2) {
@@ -20,7 +21,7 @@ private:
 	int tamaZ = 4;
 public:
 	Chunk();
-	Chunk(int xMin, int zMin, int tamaX, int tamaY, int tamaZ,float* colorgen);
+	Chunk(int xMin, int zMin, int tamaX, int tamaY, int tamaZ,float* colorgen, TextureLoader& loader);
 	~Chunk();
 	int getTam();
 	Cubo* getCubo(igvPunto3D p);

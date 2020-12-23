@@ -73,7 +73,6 @@ void igvCamara::aplicar(void) {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(P0[X], P0[Y], P0[Z], r[X], r[Y], r[Z], V[X], V[Y], V[Z]);
-	//gluLookAt(P0[X], P0[Y], P0[Z], P0[X] + r[X], P0[Y] + r[Y], P0[Z] + r[Z], V[X], V[Y], V[Z]);
 }
 
 double igvCamara::distPuntoVision()

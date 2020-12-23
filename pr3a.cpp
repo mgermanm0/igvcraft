@@ -11,7 +11,7 @@ int main (int argc, char** argv) {
 	interfaz.configura_entorno(argc,argv,
                                500,500, // tama–o de la ventana
                                100,100, // posicion de la ventana
-                               "Informatica Grafica y Visualizacion. Practica 3A." // titulo de la ventana
+                               "Minecraft de los chinos" // titulo de la ventana
                                );
 
 	// establece las funciones callbacks para la gestión de los eventos

@@ -20,12 +20,14 @@ igvCilindro::igvCilindro(float r, float a, int divU, int divV)
 	this->vertices = new float[tamavertices];
 	this->triangulos = new unsigned int[tamatriangulos];
 	this->normales = new float[tamavertices];
+	this->texarr = new GLfloat[vnum * 2];
 	this->num_vertices = vnum;
 	this->num_triangulos = tnum;
 
 	float ang;
 	float incrementoA = 2 * PI / divU;
 	float incrementoH = a / divV;
+	int contTex = 0;
 	
 	for (int i = 0; i <= divV; i++) {
 		ang = 0;
@@ -38,6 +40,9 @@ igvCilindro::igvCilindro(float r, float a, int divU, int divV)
 			vertices[nPunto] = x;
 			vertices[nPunto + 1] = y;
 			vertices[nPunto + 2] = z;
+			texarr[contTex] = x;
+			texarr[contTex + 1] = y;
+			contTex += 2;
 			ang += incrementoA;
 		}
 	}

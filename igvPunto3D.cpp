@@ -103,3 +103,9 @@ std::ostream& operator<<(std::ostream& os, const igvPunto3D& p)
 	os << "(" << p[X] << ", " << p[Y] << ", " << p[Z] << ")";
 	return os;
 }
+
+float* igvPunto3D::cloneToFloatArray() const
+{
+	float* res = new float[4]{ (float)c[0], (float)c[1], (float)c[2], 1.0 };
+	return res;
+}
