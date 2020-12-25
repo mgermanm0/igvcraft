@@ -4,13 +4,14 @@
 #include <iostream>
 #include "igvTextura.h"
 #include "igvMaterial.h"
+#include "igvColor.h"
 #define PI 3.14159265358979323846 
 
 Cubo::Cubo() :igvMallaTriangulos()
 {
 }
 
-Cubo::Cubo(double lado, igvPunto3D& coords, float* color, tipoCubo tipo, igvTextura* textura) : coords(coords), color(color), lado(lado), tipo(tipo), tex(textura)
+Cubo::Cubo(double lado, igvPunto3D& coords, igvColor& color, tipoCubo tipo, igvTextura* textura) : coords(coords), color(color), lado(lado), tipo(tipo), tex(textura)
 {
 	long int vnum = 8;
 	long int tnum = 12;
@@ -34,8 +35,8 @@ Cubo::Cubo(double lado, igvPunto3D& coords, float* color, tipoCubo tipo, igvText
 		ang = 45 * PI / 180;
 		for (int j = 0; j < divU; j++) {
 			int nPunto = (4 * i + j) * 3;
-			float x = cos(ang) * diag/2.0f;
-			float z = sin(ang) * diag/2.0f;
+			float x = cos(ang) * diag / 2.0f;
+			float z = sin(ang) * diag / 2.0f;
 
 			vertices[nPunto] = x;
 			vertices[nPunto + 1] = y;
@@ -43,7 +44,7 @@ Cubo::Cubo(double lado, igvPunto3D& coords, float* color, tipoCubo tipo, igvText
 			ang += incrementoA;
 
 		}
-		y+=lado;
+		y += lado;
 	}
 
 	int nTriangulo = 0;
@@ -127,8 +128,9 @@ Cubo::Cubo(double lado, igvPunto3D& coords, float* color, tipoCubo tipo, igvText
 		triangulos[nTriangulo + 2] = nPunto;
 		nTriangulo += 3;
 	}
-	
+
 }
+
 void Cubo::visualizar() {
 	/* Apartado B: TODO */
 	long int tamatriangulos = 12 * 3;
@@ -163,9 +165,49 @@ void Cubo::visualizar() {
 	}
 	glPopMatrix();
 }
+
+void Cubo::visualizarCaras() {
+	
+	float colores[] = {
+		1,0,0,
+		0,1,0,
+		0,0,1,
+		1,1,0,
+		1,0,1,
+		0,1,1
+	};
+	int contColor = 0;
+	/* Apartado B: TODO */
+	long int tamatriangulos = 12 * 3;
+	glPushMatrix();
+	for (int i = 0; i < tamatriangulos; i += 6)
+	{
+		glPushMatrix();
+		glColor3fv(&colores[contColor]);
+		glBegin(GL_TRIANGLES);
+		//std::cout << vertices[triangulos[i] * 3] + 0.5 << " " << vertices[triangulos[i] * 3 + 1] << "\n";
+
+
+		//T2
+
+		glVertex3f(vertices[triangulos[i + 3 + 1] * 3], vertices[triangulos[i + 3 + 1] * 3 + 1], vertices[triangulos[i + 3 + 1] * 3 + 2]);
+		glVertex3f(vertices[triangulos[i + 3 + 2] * 3], vertices[triangulos[i + 3 + 2] * 3 + 1], vertices[triangulos[i + 3 + 2] * 3 + 2]);
+		glVertex3f(vertices[triangulos[i + 3] * 3], vertices[triangulos[i + 3] * 3 + 1], vertices[triangulos[i + 3] * 3 + 2]);
+
+
+		glVertex3f(vertices[triangulos[i + 2] * 3], vertices[triangulos[i + 2] * 3 + 1], vertices[triangulos[i + 2] * 3 + 2]);
+		glVertex3f(vertices[triangulos[i + 1] * 3], vertices[triangulos[i + 1] * 3 + 1], vertices[triangulos[i + 1] * 3 + 2]);
+		glVertex3f(vertices[triangulos[i] * 3], vertices[triangulos[i] * 3 + 1], vertices[triangulos[i] * 3 + 2]);
+
+		glEnd();
+		glPopMatrix();
+		contColor+=3;
+	}
+	glPopMatrix();
+}
 Cubo::~Cubo()
 {
-	if (color) delete[] color;
+	//if (color) delete[] color;
 }
 
 igvPunto3D* Cubo::getCoords()
@@ -173,9 +215,9 @@ igvPunto3D* Cubo::getCoords()
 	return &coords;
 }
 
-float* Cubo::getColor()
+igvColor* Cubo::getColor()
 {
-	return color;
+	return &color;
 }
 
 tipoCubo Cubo::getTipo()
@@ -190,12 +232,42 @@ bool Cubo::puedoRomper()
 
 void Cubo::visualizarCubo()
 {
-
+	float colorC[] = { color[R] / 255.0, color[G] / 255.0, color[B] / 255.0 };
 	glPushMatrix();
-	//float color2[] = { 0.5,0.5,0.5 };
-	//glMaterialfv(GL_FRONT, GL_EMISSION, color2);
+	glMaterialfv(GL_FRONT, GL_EMISSION, colorC);
 	glTranslatef(coords[X] + lado / 2.0, coords[Y], coords[Z] + lado / 2.0);
-	Cubo::visualizar();
+	visualizar();
+	glPopMatrix();
+}
+
+void Cubo::visualizarCuboBB(int tamaX, int tamaY, int tamaZ)
+{
+	float colorC[] = { color[R] / 255.0, color[G] / 255.0, color[B] / 255.0 };
+	glPushMatrix();
+	glMaterialfv(GL_FRONT, GL_EMISSION, colorC);
+	glTranslatef(coords[X] + tamaX/2.0, coords[Y], coords[Z] + tamaZ/2.0);
+	glScalef(tamaX, tamaY, tamaZ);
+	igvMallaTriangulos::visualizar();
+	glPopMatrix();
+}
+
+void Cubo::visualizaCuboChunkColor(float* colorChunk)
+{
+	glPushMatrix();
+	glColor3fv(colorChunk);
+	glTranslatef(coords[X] + lado / 2.0, coords[Y], coords[Z] + lado / 2.0);
+	igvMallaTriangulos::visualizar();
+	glPopMatrix();
+}
+
+void Cubo::visualizaCuboSeleccion()
+{
+	float colorC[] = { color[R] / 255.0, color[G] / 255.0, color[B] / 255.0 };
+	glPushMatrix();
+	if (marcado) colorC[0] = 1;
+	glColor3fv(colorC);
+	glTranslatef(coords[X] + lado / 2.0, coords[Y], coords[Z] + lado / 2.0);
+	igvMallaTriangulos::visualizar();
 	glPopMatrix();
 }
 
@@ -204,9 +276,14 @@ void Cubo::visualizaCuboSinColor()
 	float color2[] = { 1,0,0 };
 	glPushMatrix();
 	glMaterialfv(GL_FRONT, GL_EMISSION, color2);
-	glTranslatef(coords[X] + lado / 2.0, coords[Y] - 2, coords[Z] + lado / 2.0);
+	glTranslatef(coords[X] + lado / 2.0, coords[Y], coords[Z] + lado / 2.0);
 	visualizar();
 	glPopMatrix();
+}
+
+void Cubo::marcar()
+{
+	marcado = true;
 }
 
 std::ostream& operator<<(std::ostream& os, const Cubo& cubo)

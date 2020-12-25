@@ -41,9 +41,14 @@ public:
 	bool get_ejes() { return ejes; };
 	void set_ejes(bool _ejes) { ejes = _ejes; };
 
-	// Apartado A: métodos para incrementar los ángulos
+	void visualizarMundoSeleccion();
+
+	Chunk* getChunkByColor(igvColor& color);
+
+	Chunk** getFronteraByColor(igvColor& color);
+
 	void incrementaAngulo(char eje, double incremento);
-	// Apartado A: métodos para obtener los valores de los ángulos
+
 
 };
 

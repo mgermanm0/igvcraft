@@ -39,6 +39,18 @@ double igvColor::operator[] (const unsigned char idx) const {
 	return color[idx];
 }
 
+bool igvColor::operator==(const igvColor& a)
+{
+	return (color[R] == a[R] && color[G] == a[G] && color[B] == a[B]);
+}
+
+bool igvColor::less(const igvColor& a, const igvColor& b)
+{
+	float lb = 0.2126 * b[R] + 0.7152 * b[G] + 0.0722 * b[B];
+	float la = 0.2126 * a[R] + 0.7152 * a[G] + 0.0722 * a[B];
+	return la<lb;
+}
+
 void igvColor::aplicar (void) {
 	glColor4dv(color);
 }

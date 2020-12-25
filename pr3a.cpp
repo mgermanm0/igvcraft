@@ -9,7 +9,7 @@ igvInterfaz interfaz;
 int main (int argc, char** argv) {
 	// inicializa la ventana de visualización
 	interfaz.configura_entorno(argc,argv,
-                               500,500, // tama–o de la ventana
+                               1024,720, // tama–o de la ventana
                                100,100, // posicion de la ventana
                                "Minecraft de los chinos" // titulo de la ventana
                                );

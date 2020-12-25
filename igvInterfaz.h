@@ -17,7 +17,9 @@
 using namespace std;
 typedef enum {
 	IGV_VISUALIZAR,
-	IGV_SELECCIONAR,
+	SELECCIONAR_CHUNK,
+	SELECCIONAR_BLOQUE,
+	SELECCIONAR_CARA,
 } modoInterfaz;
 class igvInterfaz {
 	protected:
@@ -30,6 +32,8 @@ class igvInterfaz {
 		igvCamara minimapa;
 
 		modoInterfaz modo = IGV_VISUALIZAR;
+		int cursorX;
+		int cursorY;
 
 		bool boton_retenido = false;
 		bool normal = false;

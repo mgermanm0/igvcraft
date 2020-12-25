@@ -7,46 +7,44 @@ Chunk::Chunk()
 {
 }
 
-Chunk::Chunk(int xMin, int zMin ,int tamaX, int tamaY, int tamaZ, float* colorgen, TextureLoader& loader): tamaX(tamaX), tamaY(tamaY), tamaZ(tamaZ)
+Chunk::Chunk(int xMin, int zMin ,int tamaX, int tamaY, int tamaZ, igvColor& colorgen, TextureLoader& loader): tamaX(tamaX), tamaY(tamaY), tamaZ(tamaZ), color(colorgen)
 {
+	esquina.set(xMin, 0, zMin);
 	float lado = 1;
+	int r = 10;
+	int g = 0;
+	int b = 0;
 	for (int y = 0; y < tamaY; y++)
 	{
 		for (int x = 0; x < tamaX; x++)
 		{
 			for(int z = 0; z < tamaZ; z++){
-				float* color = new float[3];
-				color[0] = colorgen[0] / 255.0;
-				color[1] = colorgen[1] / 255.0;
-				color[2] = colorgen[2] / 255.0;
+				igvColor* colorCubo = new igvColor(r, g, b);
 				
 				igvPunto3D coords(xMin + x*lado, y*lado, zMin + z*lado);
 				Cubo* cubo;
-				if(y == (tamaY/2)) cubo = new Cubo(lado, coords, color, CESPED, loader.getTextura(TIERRA));
+				if(y == (tamaY/2)) cubo = new Cubo(lado, coords, *colorCubo, CESPED, loader.getTextura(TIERRA));
 				else if (y > (tamaY/2)){
-					cubo = new Cubo(lado, coords, color, VACIO , loader.getTextura(TIERRA));
+					cubo = new Cubo(lado, coords, *colorCubo, VACIO , loader.getTextura(TIERRA));
 				}
 				else {
-					cubo = new Cubo(lado, coords, color, PIEDRA, loader.getTextura(TIERRA));
+					cubo = new Cubo(lado, coords, *colorCubo, PIEDRA, loader.getTextura(TIERRA));
 				}
 				this->chunk.push_back(cubo);
-				colorgen[0] += 1;
-				/*
-				if (colorgen[0] > 255) {
-					colorgen[0] = 0;
-					if (colorgen[1] > 255) {
-						colorgen[1] = 0;
-						if (colorgen[2] > 255) {
+				b++;
+				if (b > 255) {
+					b = 0;
+					if (r > 255) {
+						r = 0;
+						if (g > 255) {
+							g = 0;
 							printf("NO MAS COLORES");
 						}
-						else {
-							colorgen[2] += 1;
-						}
+						else g++;
 					}
-					else {
-						colorgen[1] += 1;
-					}
-				}*/
+					else r++;
+				}
+				else b++;
 			}
 		}
 	}
@@ -66,6 +64,11 @@ int Chunk::getTam()
 	return chunk.size();
 }
 
+igvColor* Chunk::getColor()
+{
+	return &color;
+}
+
 Cubo* Chunk::getCubo(igvPunto3D p)
 {
 	for (int i = 0; i < chunk.size(); i++) {
@@ -77,11 +80,11 @@ Cubo* Chunk::getCubo(igvPunto3D p)
     return nullptr;
 }
 
-Cubo* Chunk::getCubo(float* p)
+Cubo* Chunk::getCubo(igvColor& p)
 {
 	for (int i = 0; i < chunk.size(); i++) {
-		float* color = chunk[i]->getColor();
-		if (p[0] == color[0] && p[1] == color[1] && p[2] == color[2]) {
+		igvColor* colorCubo = chunk[i]->getColor();
+		if (p == *colorCubo) {
 			//std::cout << "Cubo seleccionado: " << chunk[i] << "\n";
 			return chunk[i];
 		}
@@ -89,11 +92,40 @@ Cubo* Chunk::getCubo(float* p)
 	return nullptr;
 }
 
+void Chunk::drawColorBox()
+{
+	float cx = color[R] / 255.0f;
+	float cz = color[B] / 255.0f;
+	
+	float* color = new float[3]{ cx,0,cz };
+	if (marcado) color[0] = 1;
+	glPushMatrix();
+	for (int i = 0; i < chunk.size(); i++)
+	{
+		if (chunk[i]->getTipo() != VACIO) chunk[i]->visualizaCuboChunkColor(color);
+	}
+	glPopMatrix();
+}
+
+void Chunk::marcar()
+{
+	marcado = true;
+}
+
 void Chunk::drawChunk()
 {
 	for (int i = 0; i < chunk.size(); i++)
 	{
-		if(chunk[i]->getTipo() != VACIO) chunk[i]->visualizarCubo();
+		if(chunk[i]->getTipo() != VACIO) chunk[i]->visualizaCuboSinColor();
+	}
+
+}
+
+void Chunk::drawChunkSeleccionCubo()
+{
+	for (int i = 0; i < chunk.size(); i++)
+	{
+		if (chunk[i]->getTipo() != VACIO) chunk[i]->visualizaCuboSeleccion();
 	}
 
 }

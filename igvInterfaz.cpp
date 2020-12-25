@@ -4,6 +4,7 @@
 #include <math.h>
 #include "igvInterfaz.h"
 #define PI 3.14159265358979323846
+#include "orientacion.h"
 extern igvInterfaz interfaz; // los callbacks deben ser estaticos y se requiere este objeto para acceder desde
                              // ellos a las variables de la clase
 
@@ -41,10 +42,10 @@ void igvInterfaz::configura_entorno(int argc, char** argv,
 	glEnable(GL_DEPTH_TEST); // activa el ocultamiento de superficies por z-buffer
   glClearColor(1.0,1.0,1.0,0.0); // establece el color de fondo de la ventana
 
-	glEnable(GL_LIGHTING); // activa la iluminacion de la escena
+	//glEnable(GL_LIGHTING); // activa la iluminacion de la escena
   glEnable(GL_NORMALIZE); // normaliza los vectores normales para calculo iluminacion
   glEnable(GL_TEXTURE_2D);
-  glutSetCursor(GLUT_CURSOR_NONE);
+  //glutSetCursor(GLUT_CURSOR_NONE);
 
 	crear_mundo(); // crea el mundo a visualizar en la ventana
 }
@@ -129,7 +130,7 @@ void igvInterfaz::set_glutDisplayFunc() {
 	glViewport(0, 0, interfaz.get_ancho_ventana(), interfaz.get_alto_ventana());
 
 	// Apartado A: antes de aplicar las transformaciones de cámara y proyección hay que comprobar el modo para sólo visualizar o seleccionar:
-	if (interfaz.modo == IGV_SELECCIONAR) {
+	if (interfaz.modo == SELECCIONAR_CHUNK) {
 		// Apartado A: Para que funcione habrá que dibujar la escena sin efectos, sin iluminación, sin texturas ...
 		glDisable(GL_LIGHTING); // desactiva la iluminacion de la escena
 		glDisable(GL_DITHER);
@@ -137,6 +138,7 @@ void igvInterfaz::set_glutDisplayFunc() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_CULL_FACE);
+
 		// Apartado A: Reestablece los colores como no seleccionado
 
 
@@ -144,21 +146,40 @@ void igvInterfaz::set_glutDisplayFunc() {
 		interfaz.camara.aplicar();
 
 		// Apartado A: visualiza los BV cada uno de un color
-
+		interfaz.escena.visualizarMundoSeleccion();
 
 		// Apartado A: Obtener el color del pixel seleccionado
 		GLubyte pixel[3];
 		glReadPixels(interfaz.cursorX, interfaz.cursorY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
+		std::cout << "\nColor seleccionado Chunk: " << (float)pixel[0] << "," << (float)pixel[1] << "," << (float)pixel[2] << "\n";
+		igvColor pxColor((float)pixel[0], (float)pixel[1], (float)pixel[2]);
+		Chunk** frontera = interfaz.escena.getFronteraByColor(pxColor);
+		/*if (frontera != nullptr) {
+			for (int i = 0; i < 9; i++)
+			{
+				if(frontera[i] != nullptr) frontera[i]->marcar();
+			}
+		}*/
 
-		// Apartado A: Comprobar el color del objeto que hay en el cursor mirando en la tabla de colores y asigna otro color al objeto seleccionado
-
-
-
-		// Apartado A: Cambiar a modo de visualización de la escena
+		if (frontera != nullptr) {
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			interfaz.camara.aplicar();
+			frontera[CENTRO]->drawChunkSeleccionCubo();
+			glReadPixels(interfaz.cursorX, interfaz.cursorY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
+			std::cout << "\nColor seleccionado Cubo: " << (float)pixel[0] << "," << (float)pixel[1] << "," << (float)pixel[2] << "\n";
+			igvColor pxColor((float)pixel[0], (float)pixel[1], (float)pixel[2]);
+			Cubo* cuboSeleccinado = frontera[CENTRO]->getCubo(pxColor);
+			if (cuboSeleccinado != nullptr) {
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				interfaz.camara.aplicar();
+				cuboSeleccinado->visualizaCuboSeleccion();
+			}
+		}
 		interfaz.modo = IGV_VISUALIZAR;
 
 		// Apartado A: Habilitar de nuevo la iluminación
 		glEnable(GL_LIGHTING);
+		glEnable(GL_TEXTURE_2D);
 	}
 	else {
 		// aplica las transformaciones en función de los parámetros de la cámara
@@ -179,7 +200,7 @@ void igvInterfaz::set_glutMouseFunc(GLint boton, GLint estado, GLint x, GLint y)
 			std::cout << "Boton pulsado y presionado";
 			interfaz.boton_retenido = true;
 
-			interfaz.modo = IGV_SELECCIONAR;
+			interfaz.modo = SELECCIONAR_CHUNK;
 
 			// Apartado A: guardar el pixel pulsado
 			interfaz.cursorX = x;

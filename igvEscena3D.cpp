@@ -17,7 +17,7 @@ igvEscena3D::igvEscena3D() {
 	ejes = true;
 
 	//Crear un mundo
-	mundo = new Mundo(0, 10, 0, 10, 2, 5, 2);
+	mundo = new Mundo(0, 1, 0, 1, 1, 1, 1);
 }
 
 igvEscena3D::~igvEscena3D() {
@@ -77,6 +77,7 @@ void pintar_cruceta(void) {
 }
 
 void igvEscena3D::visualizar(bool normal, bool gouraud) {
+	glDisable(GL_LIGHTING);
 	GLfloat color_malla[] = { 0,0.50,0 };
 	// crear luces
 	igvFuenteLuz luzDireccional(GL_LIGHT0, igvPunto3D(20, 20, 20), igvColor(0, 0, 0, 1), igvColor(1, 1, 1, 1), igvColor(1, 1, 1, 1), 1, 0, 0);
@@ -94,7 +95,9 @@ void igvEscena3D::visualizar(bool normal, bool gouraud) {
 	glPushMatrix();
 	double lado = 1;
 	float color[] = { 0,0,0 };
-	mundo->drawWorld();
+	//mundo->drawWorld();
+	mundo->drawWorldCubes();
+
 	//Chunk* obtenido = mundo->getChunk(x, z);
 	//Cubo* cubo = obtenido->getCubo(igvPunto3D(x, 3, z));
 	//glTranslatef(0, 2, 0);
@@ -102,17 +105,29 @@ void igvEscena3D::visualizar(bool normal, bool gouraud) {
 	//glMaterialfv(GL_FRONT, GL_EMISSION, color);
 	//cubo->visualizaCuboSinColor();
 	glPopMatrix();
-	x++;
+	/*x++;
 	if (x >= 50) {
 		x = 0;
 		z++;
 		if (z >= 50) {
 			z = 0;
 		}	
-	}
+	}*/
 	glPopMatrix(); // restaura la matriz de modelado
 }
 
+void igvEscena3D::visualizarMundoSeleccion()
+{
+	mundo->drawWorldChunksVB();
+}
+
+Chunk* igvEscena3D::getChunkByColor(igvColor& color) {
+	return mundo->getChunkSeleccion(color);
+}
+
+Chunk** igvEscena3D::getFronteraByColor(igvColor& color) {
+	return mundo->getChunkSeleccionFrontera(color);
+}
 void igvEscena3D::incrementaAngulo(char eje, double incremento) {
 	switch (eje) {
 	case 'X':

@@ -38,9 +38,13 @@ class igvColor {
 		// Metodos
 		double& operator[] ( const unsigned char idx );
 		double operator[] (const unsigned char idx) const;
+		bool operator==(const igvColor& a);
+		static bool less(const igvColor& a, const igvColor& b);
 
 		void aplicar(void);
 		float* cloneToFloatArray() const; //Devuelve el color como un array de float.
+
+		float* cloneToFloatArray01() const;
 
 };
 

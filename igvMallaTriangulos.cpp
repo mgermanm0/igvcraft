@@ -43,8 +43,6 @@ void igvMallaTriangulos::visualizar() {
 	
 	glShadeModel(GL_FLAT);
 
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2, GL_FLOAT, 0, texarr);
 
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glVertexPointer(3, GL_FLOAT, 0, vertices);
