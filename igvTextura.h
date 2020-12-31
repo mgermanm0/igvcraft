@@ -11,6 +11,7 @@
 
 #include <SDL_image.h>
 #include <stdio.h>
+#include <string>
 
 class igvTextura {
 
@@ -24,7 +25,7 @@ class igvTextura {
 
 	public:
 		// Constructores por defecto y destructor
-		igvTextura(char *fichero); // Textura cargada desde un fichero
+		igvTextura(std::string fichero); // Textura cargada desde un fichero
 		~igvTextura();
 
 		// Metodos

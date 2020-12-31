@@ -4,6 +4,7 @@ typedef enum {
 	IZQ,
 	TRASERA,
 	DER,
+	BASE,
 	TAPA,
-	BASE
-};
+	NO_ENCONTRADA
+} caraCubo;

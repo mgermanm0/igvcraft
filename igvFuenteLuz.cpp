@@ -128,8 +128,7 @@ void igvFuenteLuz::aplicar(void) {
 	//	activar la luz
 		glEnable(idLuz);
 	//	establecer la posición de la luz
-		float dir[] = { 1,1,1,1 };
-		glLightfv(idLuz, GL_POSITION, dir);
+		glLightfv(idLuz, GL_POSITION, posicion.cloneToFloatArray());
 	//	establecer los colores ambiental, difuso y especular
 		glLightfv(idLuz, GL_AMBIENT, colorAmbiente.cloneToFloatArray());
 		glLightfv(idLuz, GL_DIFFUSE, colorDifuso.cloneToFloatArray());

@@ -1,7 +1,10 @@
 #pragma once
 typedef enum {
 	TIERRA,
-	CESPED,
 	PIEDRA,
+	CESPED,
+	CESPED_TOP,
+	MADERA,
+	PIEDRAMADRE,
 	VACIO
 } tipoCubo;

@@ -1,17 +1,16 @@
 #include "igvTextura.h"
-
+#include <string>
 // Metodos constructores y destructor
 
-igvTextura::igvTextura(char *fichero) {
+igvTextura::igvTextura(std::string fichero) {
 	ancho = 0;
 	alto = 0;
 
 	SDL_Surface* imagen = NULL;
 
-	glEnable(GL_TEXTURE_2D);
 	if (!glIsTexture(idTextura)) {
 
-		imagen = IMG_Load(fichero);
+		imagen = IMG_Load(&fichero[0]);
 		if (!imagen)
 		{
 			/* Fallo de carga de la imagen */
@@ -31,7 +30,7 @@ igvTextura::igvTextura(char *fichero) {
 		//  - Especificar la textura, asignádole como textura el array imagen (glTexImage2D)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imagen->w, imagen->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, imagen->pixels);
 		//  - Modo de aplicación de la textura (glTexEnvf)
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		//	- Parámetros de la textura: repetición y filtros (glTexParameteri)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

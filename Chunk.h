@@ -16,7 +16,7 @@ struct comparatorPunto3D {
 class Chunk
 {
 private:
-	std::vector<Cubo*> chunk;
+	std::vector<std::vector<std::vector<Cubo*>>> chunk;
 	igvColor color;
 	igvPunto3D esquina;
 	int tamaX = 4;
@@ -25,7 +25,7 @@ private:
 	bool marcado = false;
 public:
 	Chunk();
-	Chunk(int xMin, int zMin, int tamaX, int tamaY, int tamaZ, igvColor& colorgen, TextureLoader& loader);
+	Chunk(int xMin, int zMin, int tamaX, int tamaY, int tamaZ, igvColor& colorgen);
 	~Chunk();
 	int getTam();
 	igvColor* getColor();
@@ -33,9 +33,13 @@ public:
 	Cubo* getCubo(igvColor& p);
 	void drawColorBox();
 	void marcar();
-	void drawChunk();
+	void drawChunk(TextureLoader* tl);
 	void drawChunkSeleccionCubo();
-	void drawChunkSinColor();
+	void drawChunkSeleccionCaras();
+
+	void colocarCubo(igvColor& colorCara, Chunk** frontera, Cubo* seleccionado, tipoCubo selPl);
+
+	void quitarCubo(Cubo* seleccionado);
 
 
 };

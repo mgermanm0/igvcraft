@@ -1,119 +1,85 @@
 #include <cstdlib>
 #include <stdio.h>
 #include <cmath>
-
 #include "Mundo.h"
 #include "igvEscena3D.h"
 #include "igvMallaTriangulos.h"
-#include "igvCilindro.h"
 #include "Cubo.h"
 #include "Chunk.h"
 #include <iostream>
 #include "igvFuenteLuz.h"
-
+#include "orientacion.h"
 // Metodos constructores 
 
 igvEscena3D::igvEscena3D() {
-	ejes = true;
 
 	//Crear un mundo
-	mundo = new Mundo(0, 1, 0, 1, 1, 1, 1);
+	mundo = new Mundo(0, 25, 0, 25, 5, 25, 5);
 }
 
 igvEscena3D::~igvEscena3D() {
 	if (mundo) delete mundo;
-	delete malla;
+	if (tloader) delete tloader;
 }
 
 
-// Metodos publicos 
 
-void pintar_ejes(void) {
-	GLfloat rojo[] = { 1,0,0,1.0 };
-	GLfloat verde[] = { 0,1,0,1.0 };
-	GLfloat azul[] = { 0,0,1,1.0 };
-
-	glMaterialfv(GL_FRONT, GL_EMISSION, rojo);
-	glBegin(GL_LINES);
-	glVertex3f(1000, 0, 0);
-	glVertex3f(-1000, 0, 0);
-	glEnd();
-
-	glMaterialfv(GL_FRONT, GL_EMISSION, verde);
-	glBegin(GL_LINES);
-	glVertex3f(0, 1000, 0);
-	glVertex3f(0, -1000, 0);
-	glEnd();
-
-	glMaterialfv(GL_FRONT, GL_EMISSION, azul);
-	glBegin(GL_LINES);
-	glVertex3f(0, 0, 1000);
-	glVertex3f(0, 0, -1000);
-	glEnd();
-}
-
-void pintar_cruceta(void) {
-	GLfloat rojo[] = { 1,0,0,1.0 };
-	GLfloat verde[] = { 0,1,0,1.0 };
-	GLfloat azul[] = { 0,0,1,1.0 };
-
-	glMaterialfv(GL_FRONT, GL_EMISSION, rojo);
-	glBegin(GL_LINES);
-	glVertex3f(1000, 0, 0);
-	glVertex3f(-1000, 0, 0);
-	glEnd();
-
-	glMaterialfv(GL_FRONT, GL_EMISSION, verde);
-	glBegin(GL_LINES);
-	glVertex3f(0, 1000, 0);
-	glVertex3f(0, -1000, 0);
-	glEnd();
-
-	glMaterialfv(GL_FRONT, GL_EMISSION, azul);
-	glBegin(GL_LINES);
-	glVertex3f(0, 0, 1000);
-	glVertex3f(0, 0, -1000);
-	glEnd();
-}
-
-void igvEscena3D::visualizar(bool normal, bool gouraud) {
-	glDisable(GL_LIGHTING);
-	GLfloat color_malla[] = { 0,0.50,0 };
-	// crear luces
-	igvFuenteLuz luzDireccional(GL_LIGHT0, igvPunto3D(20, 20, 20), igvColor(0, 0, 0, 1), igvColor(1, 1, 1, 1), igvColor(1, 1, 1, 1), 1, 0, 0);
-	luzDireccional.aplicar();
-
-	// crear el modelo
-	glPushMatrix(); // guarda la matriz de modelado
-
-	  // se pintan los ejes
-	if (ejes) pintar_ejes();
-	//glLightfv(GL_LIGHT0,GL_POSITION,luz0); // la luz se coloca aquí si se mueve junto con la escena
-
-	
-
+void igvEscena3D::visualizar() {
 	glPushMatrix();
-	double lado = 1;
-	float color[] = { 0,0,0 };
-	//mundo->drawWorld();
-	mundo->drawWorldCubes();
+	// crear luces
 
-	//Chunk* obtenido = mundo->getChunk(x, z);
-	//Cubo* cubo = obtenido->getCubo(igvPunto3D(x, 3, z));
-	//glTranslatef(0, 2, 0);
-	//float color[] = { 1,0,0 };
-	//glMaterialfv(GL_FRONT, GL_EMISSION, color);
-	//cubo->visualizaCuboSinColor();
+	if (!tloader) {
+		tloader = new TextureLoader();
+		mundo->setTextureLoader(tloader);
+	}
+
+	igvFuenteLuz luz0(GL_LIGHT0, igvPunto3D(10, 100, 10), igvColor(0, 0, 0.2, 0), igvColor(contLuz < 10 ? 1 : 0, contLuz < 20 && contLuz > 10 ? 1 : 0, contLuz < 30 && contLuz > 20 ? 1 : 0, 1), igvColor(contLuz == 1000 ? 1 : 0, contLuz == 2000 ? 1 : 0, contLuz == 3000 ? 1 : 0, 1), 1, 0, 0, igvPunto3D(0, -1, 0), 120, 80);
+	igvFuenteLuz luz1(GL_LIGHT1, igvPunto3D(10, 100, 10), igvColor(0, 0, 0.2, 0), igvColor(1,1,1,1), igvColor(1,1,1,1), 1, 0, 0, igvPunto3D(0, -1, 0), 120, 80);
+	luz0.apagar();
+	if (rgb) {
+		if (!luz0.esta_encendida()) { 
+			luz1.apagar(); 
+			luz0.encender();
+		}
+
+		contLuz %= 30;
+		contLuz++;
+	}
+	else {
+		if (!luz1.esta_encendida()) {
+			luz0.apagar();
+			luz1.encender();
+		}
+	}
+	luz1.aplicar();
+	luz0.aplicar();
+	//igvFuenteLuz foco1(GL_LIGHT1, igvPunto3D(10, 10, 10), igvColor(0, 0, 0, 1), igvColor(1, 1, 1, 1), igvColor(1, 1, 1, 1), 1, 0, 0, igvPunto3D(0, -1, 0), 45, 30);
+	//foco1.aplicar();
+
+	/* Apartado D: definir y aplicar las propiedades de material indicadas en el guión de prácticas */
+	igvMaterial material(igvColor(1, 1, 1), igvColor(1, 1, 1), igvColor(1, 1, 1), 60);
+	material.aplicar();
+	
+	switch (tipo) {
+	case NORMAL:
+		mundo->drawWorld();
+		break;
+	case SELCHUNK:
+		mundo->drawWorldChunksVB();
+		break;
+	case SELBLOQUE:
+		selChunk[CENTRO]->drawChunkSeleccionCubo();
+		break;
+	case SELCARA:
+		selCubo->visualizaCarasCuboSeleccion();
+		break;
+	}
 	glPopMatrix();
-	/*x++;
-	if (x >= 50) {
-		x = 0;
-		z++;
-		if (z >= 50) {
-			z = 0;
-		}	
-	}*/
-	glPopMatrix(); // restaura la matriz de modelado
+}
+
+void igvEscena3D::cambiarRGB()
+{
+	rgb = !rgb;
 }
 
 void igvEscena3D::visualizarMundoSeleccion()
@@ -127,17 +93,4 @@ Chunk* igvEscena3D::getChunkByColor(igvColor& color) {
 
 Chunk** igvEscena3D::getFronteraByColor(igvColor& color) {
 	return mundo->getChunkSeleccionFrontera(color);
-}
-void igvEscena3D::incrementaAngulo(char eje, double incremento) {
-	switch (eje) {
-	case 'X':
-		anguloX += incremento;
-		break;
-	case 'Y':
-		anguloY += incremento;
-		break;
-	case 'Z':
-		anguloZ += incremento;
-		break;
-	}
 }

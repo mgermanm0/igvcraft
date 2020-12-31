@@ -13,22 +13,25 @@
 #include "Chunk.h"
 #include "Mundo.h"
 
+typedef enum {
+	NORMAL,
+	SELCHUNK,
+	SELBLOQUE,
+	SELCARA
+} tipoVisualizacion;
+
 class igvEscena3D {
 protected:
 	// Atributos
-	bool ejes;
-	Mundo* mundo;
-	// Apartado A: Añadir aquí los atributos con los ángulos de rotación en X, Y y Z.
-	double anguloX = 0;
-	double anguloY = 0;
-	double anguloZ = 0;
-
+	bool rgb = false;
+	TextureLoader* tloader = nullptr;
+	Mundo* mundo = nullptr;
+	int contLuz = 0;
 public:
 
-	int x = 0;
-	int z = 0;
-	// atributos públicos
-	igvMallaTriangulos* malla; // malla de triángulos asociada a la escena
+	tipoVisualizacion tipo = NORMAL;
+	Chunk** selChunk;
+	Cubo* selCubo;
 
 	// Constructores por defecto y destructor
 	igvEscena3D();
@@ -36,18 +39,13 @@ public:
 
 	// Métodos
 	// método con las llamadas OpenGL para visualizar la escena
-	void visualizar(bool normal, bool gouraud);
-
-	bool get_ejes() { return ejes; };
-	void set_ejes(bool _ejes) { ejes = _ejes; };
+	void visualizar();
+	void cambiarRGB();
 
 	void visualizarMundoSeleccion();
-
 	Chunk* getChunkByColor(igvColor& color);
 
 	Chunk** getFronteraByColor(igvColor& color);
-
-	void incrementaAngulo(char eje, double incremento);
 
 
 };

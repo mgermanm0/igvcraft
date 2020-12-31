@@ -44,7 +44,6 @@ class igvColor {
 		void aplicar(void);
 		float* cloneToFloatArray() const; //Devuelve el color como un array de float.
 
-		float* cloneToFloatArray01() const;
 
 };
 

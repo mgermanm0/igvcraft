@@ -3,6 +3,7 @@
 #include <map>
 #include "Chunk.h"
 #include "igvColor.h"
+#include "caraCubo.h"
 #include "TextureLoader.h"
 
 struct CompareColor
@@ -18,15 +19,17 @@ class Mundo
 private:
 	std::vector<std::vector<Chunk*>> mundo;
 	std::map<igvColor, Chunk*, CompareColor> mundoSeleccion;
-	TextureLoader loader;
+	TextureLoader* tloader;
 	int xMin, zMin, xMax, zMax;
 	float tamCasillaX, tamCasillaZ;
 public:
 	Mundo();
 	Mundo(int xMin, int xMax, int zMin, int zMax, int tamaChunkX, int tamaChunkY, int tamaChunkZ);
+	void setTextureLoader(TextureLoader* tl);
 	~Mundo();
 	void drawWorld();
 	void drawWorldCubes();
+	void drawWorldCubesFaces();
 	void drawWorldChunksVB();
 	Chunk* getChunkSeleccion(igvColor& color);
 	Chunk** getChunkSeleccionFrontera(igvColor& color);

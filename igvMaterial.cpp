@@ -28,20 +28,29 @@ igvMaterial::igvMaterial(igvColor _Ka, igvColor _Kd, igvColor _Ks, double _Ns) {
 
 void igvMaterial::aplicar(void) {
 
+	float* kaf = Ka.cloneToFloatArray();
+	float* kdf = Kd.cloneToFloatArray();
+	float* ksf = Ks.cloneToFloatArray();
 // APARTADO C
 // Aplicar los valores de los atributos del objeto igvMaterial:
 // - coeficiente de reflexión de la luz ambiental
-	glMaterialfv(GL_FRONT, GL_AMBIENT, Ka.cloneToFloatArray());
+	glMaterialfv(GL_FRONT, GL_AMBIENT, kaf);
 // - coeficiente de reflexión difuso
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, Kd.cloneToFloatArray());
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, kdf);
 // - coeficiente de reflesión especular
-	glMaterialfv(GL_FRONT, GL_SPECULAR, Ks.cloneToFloatArray());
+	glMaterialfv(GL_FRONT, GL_SPECULAR, ksf);
 // - exponente de Phong
 	glMaterialf(GL_FRONT, GL_SHININESS, Ns);
 
 // establecer como color de emisión (0.0, 0.0, 0.0) (el objeto no es una fuente de luz)
-	glMaterialfv(GL_FRONT, GL_EMISSION, igvColor(0, 0, 0).cloneToFloatArray());
+	float* colorEmision = igvColor(0, 0, 0).cloneToFloatArray();
+	glMaterialfv(GL_FRONT, GL_EMISSION, colorEmision);
 
+	//dani crack los deletes equisde
+	delete [] colorEmision;
+	delete [] kaf;
+	delete [] kdf;
+	delete [] ksf;
 
 }
 

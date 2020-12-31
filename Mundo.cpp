@@ -24,23 +24,26 @@ Mundo::Mundo(int xMin, int xMax, int zMin, int zMax, int tamaChunkX, int tamaChu
 	mundo.resize(numDivZ);
 	float* colorgen = new float[3];
 	colorgen[0] = colorgen[1] = colorgen[2] = 0;
-	int cx = 100;
-	int cz = 60;
+	int cx = 10;
+	int cz = 5;
 	for (int i = 0; i < numDivZ; i++)
 	{
 		for (int j = 0; j < numDivX; j++) {
 			int rc = j * tamaChunkX + xMin + cx;
 			int bc = i * tamaChunkZ + zMin + cz;
 			igvColor chunkColor(rc, 0, bc);
-			Chunk* chunk = new Chunk(j*tamaChunkX + xMin,i*tamaChunkZ + zMin,tamaChunkX,tamaChunkY,tamaChunkZ, chunkColor, loader);
+			Chunk* chunk = new Chunk(j*tamaChunkX + xMin,i*tamaChunkZ + zMin,tamaChunkX,tamaChunkY,tamaChunkZ, chunkColor);
 			mundo[i].push_back(chunk);
-			//mundoSeleccion.insert(std::pair<igvColor, Chunk*>(chunkColor, chunk));
-			cz += 1;
+			cz++;
 			std::cout << "Color generado: " << rc << " " << bc << "\n";
 		}
-		cx += 2;
+		cx++;
 	}
 
+}
+
+void Mundo::setTextureLoader(TextureLoader* tl) {
+	tloader = tl;
 }
 
 Mundo::~Mundo()
@@ -58,7 +61,7 @@ void Mundo::drawWorld()
 {
 	for (int i = 0; i < mundo.size(); i++) {
 		for (int j = 0; j < mundo[i].size(); j++) {
-			mundo[i][j]->drawChunk();
+			mundo[i][j]->drawChunk(tloader);
 		}
 	}
 }
@@ -68,6 +71,15 @@ void Mundo::drawWorldCubes()
 	for (int i = 0; i < mundo.size(); i++) {
 		for (int j = 0; j < mundo[i].size(); j++) {
 			mundo[i][j]->drawChunkSeleccionCubo();
+		}
+	}
+}
+
+void Mundo::drawWorldCubesFaces()
+{
+	for (int i = 0; i < mundo.size(); i++) {
+		for (int j = 0; j < mundo[i].size(); j++) {
+			mundo[i][j]->drawChunkSeleccionCaras();
 		}
 	}
 }
@@ -113,10 +125,10 @@ Chunk** Mundo::getChunkSeleccionFrontera(igvColor& color) {
 	frontera[CENTRO] = sel;
 
 	if ((x - 1) >= 0) {
-		frontera[IZQ] = mundo[z][x - 1];
+		frontera[CENTRO_IZQ] = mundo[z][x - 1];
 	}
 	if ((x + 1) < mundo[z].size()) {
-		frontera[DER] = mundo[z][x + 1];
+		frontera[CENTRO_DER] = mundo[z][x + 1];
 	}
 
 	if ((z - 1) >= 0) {
@@ -149,3 +161,4 @@ Chunk* Mundo::getChunk(int x, int z)
 	if (xc > mundo[zc].size() - 1) xc = mundo[zc].size() - 1;
 	return mundo[zc][xc];
 }
+

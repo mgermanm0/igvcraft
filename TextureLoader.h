@@ -2,6 +2,7 @@
 #include <vector>
 #include "igvTextura.h"
 #include "tipoCubo.h"
+#include "igvMaterial.h"
 class TextureLoader
 {
 private:

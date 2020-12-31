@@ -12,6 +12,7 @@ igvColor::igvColor (const double r, const double g, const double b) {
 	color[R] = r;
 	color[G] = g;
 	color[B] = b;
+	color[A] = 0;
 }
 
 igvColor::igvColor (const double r, const double g, const double b, const double a) {

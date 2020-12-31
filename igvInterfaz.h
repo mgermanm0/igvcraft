@@ -17,10 +17,14 @@
 using namespace std;
 typedef enum {
 	IGV_VISUALIZAR,
-	SELECCIONAR_CHUNK,
-	SELECCIONAR_BLOQUE,
-	SELECCIONAR_CARA,
+	SELECCIONAR
 } modoInterfaz;
+
+typedef enum {
+	NADA,
+	PONER,
+	QUITAR
+} accion;
 class igvInterfaz {
 	protected:
 		// Atributos
@@ -28,16 +32,17 @@ class igvInterfaz {
 		int alto_ventana;  // alto inicial de la ventana de visualizacion
 
 		igvEscena3D escena; // escena que se visualiza en la ventana definida por igvInterfaz
+		igvCamara* actual = nullptr; //Camara		que se esta usando
 		igvCamara camara; // cámara que se utiliza para visualizar la escena
 		igvCamara minimapa;
 
 		modoInterfaz modo = IGV_VISUALIZAR;
+		accion accionActual = NADA;
+		tipoCubo seleccionPl = VACIO;
 		int cursorX;
 		int cursorY;
 
-		bool boton_retenido = false;
-		bool normal = false;
-		bool gouraud = false;
+		bool aerea = false;
 		bool skipEvento = true;
 		double dt;
 		double tUltimoFotograma;

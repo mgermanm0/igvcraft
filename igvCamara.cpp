@@ -56,6 +56,11 @@ void igvCamara::set(tipoCamara _tipo, igvPunto3D _P0, igvPunto3D _r, igvPunto3D 
 	zfar = _zfar;
 }
 
+void igvCamara::setCamaraASeguir(igvCamara* seguir)
+{
+	this->seguirA = seguir;
+}
+
 void igvCamara::aplicar(void) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -108,7 +113,6 @@ void igvCamara::moverAdelante(double dt)
 	igvPunto3D::normalizar(dir);
 	P0 += dir * (vel * dt);
 	r += dir * (vel * dt);
-
 }
 
 void igvCamara::moverAtras(double dt)
@@ -140,7 +144,7 @@ void igvCamara::moverDerecha(double dt)
 void igvCamara::seguir(double dt)
 {
 	igvPunto3D dir;
-	dir = r - P0;
+	dir = seguirA->P0 - r;
 	dir[Y] = 0;
 	P0 += dir * (vel * dt);
 	r += dir * (vel * dt);

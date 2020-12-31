@@ -4,34 +4,42 @@
 #include "igvPunto3D.h"
 #include "igvColor.h"
 #include "igvTextura.h"
+#include "caraCubo.h"
+#include "TextureLoader.h"
+#include "igvMaterial.h"
 #include <iostream>
 class Cubo : public igvMallaTriangulos
 {
 private:
 	tipoCubo tipo = VACIO;
-	igvTextura* tex;
 	igvPunto3D coords;
 	igvColor color;
 	bool esDestruible = true;
 	float lado = 1;
 	bool marcado = false;
 public:
+	static igvColor colores[];
+	static caraCubo caras[];
+	static float normal[];
 	Cubo();
-	Cubo(double lado, igvPunto3D& coords, igvColor& color, tipoCubo tipo, igvTextura* textura);
+	Cubo(double lado, igvPunto3D& coords, igvColor& color, tipoCubo tipo, bool destructible);
 	~Cubo();
-	void visualizar();
+	caraCubo caraSeleccionada(igvColor& color);
+	void visualizar(TextureLoader* tl);
 	void visualizarCaras();
 	igvPunto3D* getCoords();
+	double getCoordX();
+	double getCoordY();
+	double getCoordZ();
 	igvColor* getColor();
 	tipoCubo getTipo();
 	bool puedoRomper();
-	void visualizarCubo();
-	void visualizarCuboBB(int tamaX, int tamaY, int tamaZ);
+	void visualizarCubo(TextureLoader* tl);
 	void visualizaCuboChunkColor(float* color);
 	void visualizaCuboSeleccion();
-	void visualizaCuboSinColor();
+	void visualizaCarasCuboSeleccion();
 	void marcar();
-
+	void setTipo(tipoCubo tipo);
 	friend std::ostream& operator<< (std::ostream& os, const Cubo& cubo);
 };
 

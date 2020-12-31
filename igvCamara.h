@@ -10,24 +10,17 @@
 #endif
 
 #include "igvPunto3D.h"
-typedef enum {
-	panoramica,
-	planta,
-	perfil,
-	alzado,
-}poscam;
 
 typedef enum {
 	IGV_PARALELA,
 	IGV_FRUSTUM,
-	IGV_PERSPECTIVA
+	IGV_PERSPECTIVA,
 } tipoCamara;
 
 class igvCamara {
 
 public:
 	// atributos
-	poscam vis;		// Posición de la cámara
 
 	tipoCamara tipo;	// paralela o perspectiva
 
@@ -48,6 +41,9 @@ public:
 
 	// vector arriba	
 	igvPunto3D V;
+
+	//En caso de que sea una camara tipo MAPA, tiene que seguir a una camara en primera persona
+	igvCamara* seguirA = nullptr;
 
 	//Ángulos
 	double alfa = 0;
@@ -75,12 +71,12 @@ public:
 	void set(tipoCamara _tipo, igvPunto3D _P0, igvPunto3D _r, igvPunto3D _V,
 		double _angulo, double _raspecto, double _znear, double _zfar);
 
+	void setCamaraASeguir(igvCamara* seguir);
+
 	void aplicar();
 
 	void set_vista(tipoCamara t) { tipo = t; };
 	tipoCamara get_vista() { return tipo; };
-	void set_poscam(poscam x) { vis = x; };
-	poscam get_poscam() { return vis; };
 	double distPuntoVision();
 	void mirar(double incAlfa, double incBeta);
 	void moverAdelante(double dt);
@@ -88,8 +84,6 @@ public:
 	void moverIzquierda(double dt);
 	void moverDerecha(double dt);
 	void seguir(double dt);
-	void pitch(double incAlfa);
-	void yaw(double incBeta);
 };
 
 #endif

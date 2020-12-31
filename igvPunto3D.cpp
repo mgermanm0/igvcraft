@@ -100,7 +100,7 @@ void igvPunto3D::set( const double& x, const double& y, const double& z) {
 
 std::ostream& operator<<(std::ostream& os, const igvPunto3D& p)
 {
-	os << "(" << p[X] << ", " << p[Y] << ", " << p[Z] << ")";
+	os << "igvPunto3D(" << p[X] << ", " << p[Y] << ", " << p[Z] << ")";
 	return os;
 }
 
