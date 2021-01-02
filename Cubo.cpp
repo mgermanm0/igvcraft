@@ -62,7 +62,6 @@ Cubo::Cubo(double lado, igvPunto3D& coords, igvColor& color, tipoCubo tipo, bool
 			int nPunto = (4 * i + j) * 3;
 			float x = cos(ang) * diag / 2.0f;
 			float z = sin(ang) * diag / 2.0f;
-
 			vertices[nPunto] = x;
 			vertices[nPunto + 1] = y;
 			vertices[nPunto + 2] = z;

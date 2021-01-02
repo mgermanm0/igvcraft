@@ -142,7 +142,6 @@ void igvInterfaz::set_glutDisplayFunc() {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // borra la ventana y el z-buffer
 	// se establece el viewport
-	glViewport(0, 0, interfaz.get_ancho_ventana(), interfaz.get_alto_ventana());
 
 	// Apartado A: antes de aplicar las transformaciones de cámara y proyección hay que comprobar el modo para sólo visualizar o seleccionar:
 	if (interfaz.modo == SELECCIONAR) {
@@ -152,7 +151,7 @@ void igvInterfaz::set_glutDisplayFunc() {
 		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_CULL_FACE);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		glViewport(0, 0, interfaz.get_ancho_ventana(), interfaz.get_alto_ventana());
 
 		// Apartado A: Reestablece los colores como no seleccionado
 
@@ -194,7 +193,7 @@ void igvInterfaz::set_glutDisplayFunc() {
 				//std::cout << "\nColor seleccionado Cara cubo: " << (float)pixel[0] << "," << (float)pixel[1] << "," << (float)pixel[2] << "\n";
 				igvColor pxColor((float)pixel[0], (float)pixel[1], (float)pixel[2]);
 				if (interfaz.accionActual == PONER) frontera[CENTRO]->colocarCubo(pxColor, frontera, cuboSeleccinado, interfaz.seleccionPl);
-				else if (interfaz.accionActual == QUITAR && cuboSeleccinado->puedoRomper()) frontera[CENTRO]->quitarCubo(cuboSeleccinado);
+				else if (interfaz.accionActual == QUITAR) frontera[CENTRO]->quitarCubo(cuboSeleccinado);
 			}
 		}
 		interfaz.modo = IGV_VISUALIZAR;
@@ -202,10 +201,17 @@ void igvInterfaz::set_glutDisplayFunc() {
 
 		glEnable(GL_LIGHTING);
 		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_CULL_FACE);
 	}
 	else {
-		interfaz.actual->aplicar();
+		glViewport(0, 0, interfaz.get_ancho_ventana(), interfaz.get_alto_ventana());
+		interfaz.camara.aplicar();
 		interfaz.escena.visualizar();
+
+		glViewport(interfaz.get_ancho_ventana() - interfaz.get_ancho_ventana()/4, interfaz.get_alto_ventana() - interfaz.get_alto_ventana()/4, interfaz.get_ancho_ventana()/4, interfaz.get_alto_ventana()/4);
+		interfaz.minimapa.aplicar();
+		interfaz.escena.visualizar();
+
 		glutSwapBuffers();
 	}
 	
@@ -250,9 +256,6 @@ void igvInterfaz::set_glutPassiveMotionFunc(GLint x, GLint y) {
 		interfaz.skipEvento = true;
 	}
 	glutPostRedisplay();
-
-	
-
 }
 
 void igvInterfaz::set_timer(int)

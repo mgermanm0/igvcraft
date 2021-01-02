@@ -23,7 +23,6 @@ igvEscena3D::~igvEscena3D() {
 }
 
 
-
 void igvEscena3D::visualizar() {
 	glPushMatrix();
 	// crear luces
@@ -33,7 +32,7 @@ void igvEscena3D::visualizar() {
 		mundo->setTextureLoader(tloader);
 	}
 
-	igvFuenteLuz luz0(GL_LIGHT0, igvPunto3D(10, 100, 10), igvColor(0, 0, 0.2, 0), igvColor(contLuz < 10 ? 1 : 0, contLuz < 20 && contLuz > 10 ? 1 : 0, contLuz < 30 && contLuz > 20 ? 1 : 0, 1), igvColor(contLuz == 1000 ? 1 : 0, contLuz == 2000 ? 1 : 0, contLuz == 3000 ? 1 : 0, 1), 1, 0, 0, igvPunto3D(0, -1, 0), 120, 80);
+	igvFuenteLuz luz0(GL_LIGHT0, igvPunto3D(10, 100, 10), igvColor(contLuz < 10 ? 0.2 : 0, contLuz < 20 && contLuz > 10 ? 0.2 : 0, contLuz < 30 && contLuz > 20 ? 0.2 : 0, 0), igvColor(contLuz < 10 ? 1 : 0, contLuz < 20 && contLuz > 10 ? 1 : 0, contLuz < 30 && contLuz > 20 ? 1 : 0, 1), igvColor(contLuz == 1000 ? 1 : 0, contLuz == 2000 ? 1 : 0, contLuz == 3000 ? 1 : 0, 1), 1, 0, 0, igvPunto3D(0, -1, 0), 120, 80);
 	igvFuenteLuz luz1(GL_LIGHT1, igvPunto3D(10, 100, 10), igvColor(0, 0, 0.2, 0), igvColor(1,1,1,1), igvColor(1,1,1,1), 1, 0, 0, igvPunto3D(0, -1, 0), 120, 80);
 	luz0.apagar();
 	if (rgb) {

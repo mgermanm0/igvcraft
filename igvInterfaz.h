@@ -42,7 +42,6 @@ class igvInterfaz {
 		int cursorX;
 		int cursorY;
 
-		bool aerea = false;
 		bool skipEvento = true;
 		double dt;
 		double tUltimoFotograma;

@@ -132,7 +132,6 @@ void Chunk::drawColorBox()
 	float cz = color[B] / 255.0f;
 	
 	float* color = new float[3]{ cx,0,cz };
-	if (marcado) color[0] = 1;
 	glPushMatrix();
 	for (int x = 0; x < chunk.size(); x++)
 	{
@@ -147,10 +146,6 @@ void Chunk::drawColorBox()
 	glPopMatrix();
 }
 
-void Chunk::marcar()
-{
-	marcado = true;
-}
 
 void Chunk::drawChunk(TextureLoader* tl)
 {
@@ -266,5 +261,5 @@ void Chunk::colocarCubo(igvColor& colorCara, Chunk** frontera, Cubo* seleccionad
 
 void Chunk::quitarCubo(Cubo* seleccionado)
 {
-	seleccionado->setTipo(VACIO);
+	if(seleccionado->puedoRomper()) seleccionado->setTipo(VACIO);
 }
