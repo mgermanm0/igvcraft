@@ -2,6 +2,7 @@
 A minecraft-based voxel prototype game, made in C++/OpenGL+GLUT. Computer Graphics &amp; Visualization (Informática gráfica y visualización) at UJAEN. 2020/2021 final proyect
 
 Watch a demo here:
+
 [![IgvCraft Demo](http://img.youtube.com/vi/m67OhKfc7XA/0.jpg)](http://www.youtube.com/watch?v=m67OhKfc7XA "IgvCraft Demo")
 
 Controls:
